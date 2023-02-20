@@ -27,7 +27,7 @@ static rt_uint8_t get_level(TIM_HandleTypeDef *timer, rt_base_t pin)
 {
     rt_uint32_t cnt = timer->Instance->CNT;
     int value, value_compare;
-    rt_sem_release(start);
+
     value = rt_pin_read(pin);
     // do {
     //     value = rt_pin_read(pin);
@@ -122,7 +122,7 @@ rt_uint32_t mancher_level(mancher_t device, rt_uint8_t *buf, rt_size_t size)
 
 error:
     // rt_exit_critical();
-    // LOG_E("len: %d", len);
+    LOG_E("len: %d", len);
     return len;
 }
 
