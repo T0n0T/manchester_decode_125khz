@@ -27,6 +27,8 @@
 #define TL_MIN       384        //一位电平的最小值
 #define TL_MAC      1280        //一位电平的最大值
 
+#define CODE_NUM    128
+
 #define MANCHER0_CONFIG                                 \
 {                                                       \
     .name           = "mancher0",                       \

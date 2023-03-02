@@ -42,12 +42,12 @@ static rt_uint8_t get_level(TIM_HandleTypeDef *timer, rt_base_t pin)
 rt_uint32_t mancher_level(mancher_t device, rt_uint8_t *buf, rt_size_t size)
 {
     int value, i, len = 0;
-    rt_uint8_t rfbuf[128 + 2] = {0};
+    rt_uint8_t rfbuf[CODE_NUM + 2] = {0};
     TIM_HandleTypeDef *tim = RT_NULL;
 
     RT_ASSERT(device != RT_NULL);
 
-    // rt_enter_critical();
+    rt_enter_critical();
 
     tim = (TIM_HandleTypeDef *)device->timer->user_data;
 
@@ -70,7 +70,7 @@ rt_uint32_t mancher_level(mancher_t device, rt_uint8_t *buf, rt_size_t size)
     } while (value == 1);
     // 码值起始位，0→1（曼彻斯特逻辑1）得到，有码流输入，则进入下一步
 
-    for (i = 0; i < 128;) {
+    for (i = 0; i < CODE_NUM;) {
         tim->Instance->CNT = 0;
         do {
             value = get_level(tim, device->dout);
@@ -90,7 +90,7 @@ rt_uint32_t mancher_level(mancher_t device, rt_uint8_t *buf, rt_size_t size)
         } else {
             goto error;
         }
-        if (i >= 128)
+        if (i >= CODE_NUM)
             break;
 
         // 同0电平获取
@@ -121,7 +121,7 @@ rt_uint32_t mancher_level(mancher_t device, rt_uint8_t *buf, rt_size_t size)
     LOG_D("buf: %02X", buf);
 
 error:
-    // rt_exit_critical();
+    rt_exit_critical();
     LOG_E("len: %d", len);
     return len;
 }

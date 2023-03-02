@@ -40,7 +40,7 @@ static rt_uint8_t find_stream_head(rt_uint8_t *rfbuf)
     rt_uint8_t st = 0, rfid_cnt = 0;
 
     //先读到停止位[10] = 0,再读到第一个同步位[01] = 1，即读到1001；也可以多读一个同步位[01] = 1则读100101
-    for (cnt = 0; cnt < 256; cnt++) {
+    for (cnt = 0; cnt < CODE_NUM; cnt++) {
         switch (st) {
         case 0:
             if (rfbuf[rfid_cnt]) {
@@ -108,7 +108,7 @@ static rt_uint8_t find_stream_head(rt_uint8_t *rfbuf)
                      * 1  1  1  0       1       E
                      * 01 01 01 10      00      
                      * 1  1  1  1       0       列校验行
-                     * 01 01 01 01    **10      总校验10接01行成1001 
+                     * 01 01 01 01    **10      停止位10接01行成1001
                      */
                     buf[cnt] = rfbuf[idx];
                     idx++;
@@ -142,7 +142,7 @@ static rt_uint8_t stream_decode(rt_uint8_t* pbuf)
     rt_uint8_t i, j, ii, flag = 0;
     rt_uint8_t bit1;
     //同步头获取
-    for (i = 0, j = 0; j < 128;) {
+    for (i = 0, j = 0; j < CODE_NUM;) {
         for (ii = 0; ii < 9; ii++) {
             bit1 = pbuf[i++];
             //确保i小于64
@@ -200,7 +200,7 @@ static rt_uint8_t stream_decode(rt_uint8_t* pbuf)
 static void dev_rfid_analy(mancher_t dev)
 {
     rt_uint8_t flag;
-    rt_uint8_t rfbuf[256];
+    rt_uint8_t rfbuf[CODE_NUM];
 
     /*rfid_code 全部置零
      rfbuf 全部置零*/
@@ -208,7 +208,7 @@ static void dev_rfid_analy(mancher_t dev)
     rt_memset(rfbuf, 0, sizeof(rfbuf));
 
     // 获取码流，256电位，完整一帧128码元必然包含其中
-    if (!mancher_level(dev, rfbuf, 256))
+    if (!mancher_level(dev, rfbuf, CODE_NUM))
         return;
 
     // 查找码流起始位置
