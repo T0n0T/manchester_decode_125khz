@@ -151,7 +151,7 @@ static rt_err_t mancher_timer(mancher_t device)
         return ret;
     }
 
-    LOG_D("%s init success", device->timer_name);
+    LOG_D("%s init success!", device->timer_name);
 
     return RT_EOK;
 }
@@ -174,6 +174,7 @@ rt_err_t mancher_start(mancher_t device)
         rt_kprintf("set timeout value failed\n");
         return RT_ERROR;
     }
+    LOG_I("timer %s start.",device->timer_name);
     return RT_EOK;
 }
 
@@ -242,4 +243,4 @@ int rt_hw_mancher_init(void)
 
     return RT_EOK;
 }
-INIT_APP_EXPORT(rt_hw_mancher_init);
+//INIT_APP_EXPORT(rt_hw_mancher_init);
